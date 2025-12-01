@@ -2,7 +2,6 @@ package model
 
 // This puts it inside the "model" package
 
-// The Case Class (Data Structure)
 case class HotelBooking(
                          hotel: String,         // Col Q
                          country: String,       // Col J
