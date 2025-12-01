@@ -1,10 +1,19 @@
-import scalafx.application.JFXApp3
-import scalafx.application.JFXApp3.PrimaryStage
+import scala.io.Source
+import scala.util.{Try, Success, Failure}
+import model.HotelBooking
+import answer.Answer
 
-object MyApp extends JFXApp3:
+@main def HotelAnalysis(): Unit =
+  val filename = "Hotel_Dataset.csv"
 
-  override def start(): Unit =
-    stage = new PrimaryStage()
+  val bufferedSource = Source.fromFile(filename)("ISO-8859-1")
+  
 
+  bufferedSource.close()
 
-end MyApp
+  println(s"Successfully loaded ${rawData.size} records.\n")
+  println("=" * 60)
+
+  Answer.answer1(rawData)
+  Answer.answer2(rawData)
+  Answer.answer3(rawData)
