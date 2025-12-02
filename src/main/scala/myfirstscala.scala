@@ -25,3 +25,4 @@ import answer.Answer
 
   println(s"Loaded ${bookings.size} bookings successfully.")
   Answer.answer1(bookings)
+  Answer.answer2(bookings)
