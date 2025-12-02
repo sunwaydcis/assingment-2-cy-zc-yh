@@ -2,6 +2,7 @@ package answer
 
 import model.HotelBooking
 
+
 object Answer:
 
   def answer1(rawData: List[HotelBooking]): Unit =
