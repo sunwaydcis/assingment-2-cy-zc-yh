@@ -52,7 +52,6 @@ object Answer:
       .map((HotelName, Info) => (HotelName, Info.map(b => b.bookingPrice * b.visitors * b.profitMargin).sum))
       .maxBy( _._2 )
 
-
     println(s"3. Most Profitable Hotel: ${mostProfitable._1}")
     println(f"   Total Profit: ${mostProfitable._2}%.2f")
     println("-" * 60)
