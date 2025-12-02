@@ -10,7 +10,7 @@ import answer.Answer
   val bookings: List[HotelBooking] =
     Source.fromResource("resource/Hotel_Dataset.csv")
       .getLines()
-      .drop(1)
+      .drop(1)  //throw header from datasheet
       .map { line =>
         val cols = line.split(",", -1).map(_.trim)
         HotelBooking(
@@ -26,3 +26,4 @@ import answer.Answer
   println(s"Loaded ${bookings.size} bookings successfully.")
   Answer.answer1(bookings)
   Answer.answer2(bookings)
+  Answer.answer3(bookings)
