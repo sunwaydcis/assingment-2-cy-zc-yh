@@ -45,7 +45,6 @@ object Answer:
     println("-" * 60)
 
   // Question 3:
-  // Profit = visitor * profitMargin
   def answer3(rawData: List[HotelBooking]): Unit =
     val mostProfitable = rawData
       .groupBy(_.hotel)
