@@ -10,7 +10,7 @@ trait EconomyScore:
 
 class PriceNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: HotelBooking): Double =
-    normalize(h.bookingPrice, min, max)
+    normalize(h.actualPrice, min, max)
 
 class DiscountNormalized(max: Double) extends EconomyScore:
   override def score(h: HotelBooking): Double =

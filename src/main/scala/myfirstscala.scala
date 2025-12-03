@@ -15,6 +15,8 @@ import answer.Answer
       .map { line =>
         val cols = line.split(",", -1).map(_.trim)
         HotelBooking(
+          days = parseInt(cols(13)),
+          rooms = parseInt(cols(15)),
           hotel = cols(16),
           country = cols(9),
           bookingPrice = parseDouble(cols(20)),

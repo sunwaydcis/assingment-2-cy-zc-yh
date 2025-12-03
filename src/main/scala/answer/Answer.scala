@@ -18,7 +18,7 @@ object Answer:
     println("2. Hotels and their normalized economy scores:")
 
     // find min & max to normalize correctly
-    val prices = rawData.map(_.bookingPrice)
+    val prices = rawData.map(_.actualPrice)
     val discounts = rawData.map(_.discount)
     val margins = rawData.map(_.profitMargin)
 
@@ -39,14 +39,23 @@ object Answer:
     def totalScore(h: HotelBooking): Double =
       scoringMethods.map(_.score(h)).sum
 
-    // print score for all hotels
-    rawData.foreach { hotel =>
-      val score = totalScore(hotel)
-      println(f"Hotel: ${hotel.hotel}, Score: $score%.2f, Price: ${hotel.bookingPrice}, Discount: ${hotel.discount}, Margin: ${hotel.profitMargin}")
-    }
+    // find the hotel with lowest score
+    val mostEconomicalHotel =
+      rawData.minBy(totalScore)
+
+    // print only the most economical hotel
+    val score = totalScore(mostEconomicalHotel)
+
+    // print the details of the most economical hotel
+    println(
+      f"Best Hotel: ${mostEconomicalHotel.hotel}\n" +
+        f"Score: $score%.2f\n" +
+        f"Actual Price (per room/day): ${mostEconomicalHotel.actualPrice}%.2f\n" +
+        f"Discount: ${mostEconomicalHotel.discount}\n" +
+        f"Profit Margin: ${mostEconomicalHotel.profitMargin}"
+    )
 
     println("-" * 60)
-
 
   // Question 3:
   def answer3(rawData: List[HotelBooking]): Unit =
