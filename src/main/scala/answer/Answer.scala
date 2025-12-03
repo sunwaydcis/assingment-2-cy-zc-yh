@@ -37,7 +37,7 @@ object Answer:
 
     // calculate total score for a hotel
     def totalScore(h: HotelBooking): Double =
-      scoringMethods.map(_.score(h)).sum
+      scoringMethods.map(_.score(h)).sum / scoringMethods.size
 
     // find the hotel with lowest score
     val mostEconomicalHotel =
