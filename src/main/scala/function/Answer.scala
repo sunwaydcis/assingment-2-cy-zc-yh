@@ -1,7 +1,6 @@
-package answer
+package function
 
-import model.HotelBooking
-import model.{EconomyScore, PriceNormalized,DiscountNormalized,MarginNormalized}
+import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized}
 
 object Answer:
 
@@ -14,13 +13,13 @@ object Answer:
     println(s"1. Country with highest bookings: ${topCountry._1} (${topCountry._2})")
     println("-" * 60)
 
-  def answer2(rawData: List[HotelBooking]): Unit =
+  def answer2(rawData: List[AverageData]): Unit =
     println("2. Hotels and their normalized economy scores:")
 
     // find min & max to normalize correctly
-    val prices = rawData.map(_.actualPrice)
-    val discounts = rawData.map(_.discount)
-    val margins = rawData.map(_.profitMargin)
+    val prices = rawData.map(_.averagePrice)
+    val discounts = rawData.map(_.averageDiscount)
+    val margins = rawData.map(_.averageProfitMargin)
 
     val minPrice = prices.min
     val maxPrice = prices.max
@@ -35,28 +34,24 @@ object Answer:
       new MarginNormalized(minMargin, maxMargin)
     )
 
-    // calculate total score for a hotel
-    def totalScore(h: HotelBooking): Double =
-      scoringMethods.map(_.score(h)).sum / scoringMethods.size
+    // total score for each hotel (NOW uses AverageData)
+    def totalScore(a: AverageData): Double =
+      scoringMethods.map(_.score(a)).sum / scoringMethods.size
 
-    // find the hotel with lowest score
-    val mostEconomicalHotel =
-      rawData.minBy(totalScore)
+    // find best hotel
+    val best = rawData.maxBy(totalScore)
 
-    // print only the most economical hotel
-    val score = totalScore(mostEconomicalHotel)
+    val score = totalScore(best)
 
-    // print the details of the most economical hotel
     println(
-      f"Best Hotel: ${mostEconomicalHotel.hotel}\n" +
+      f"Best Hotel: ${best.hotelName}\n" +
         f"Score: $score%.2f\n" +
-        f"Actual Price (per room/day): ${mostEconomicalHotel.actualPrice}%.2f\n" +
-        f"Discount: ${mostEconomicalHotel.discount}\n" +
-        f"Profit Margin: ${mostEconomicalHotel.profitMargin}"
+        f"Average Price: ${best.averagePrice}%.2f\n" +
+        f"Average Discount: ${best.averageDiscount}%.2f\n" +
+        f"Average Profit Margin: ${best.averageProfitMargin}%.2f"
     )
 
     println("-" * 60)
-
   // Question 3:
   def answer3(rawData: List[HotelBooking]): Unit =
     val mostProfitable = rawData

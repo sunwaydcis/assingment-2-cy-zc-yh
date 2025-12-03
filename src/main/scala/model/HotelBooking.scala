@@ -12,7 +12,4 @@ case class HotelBooking(
                         profitMargin: Double,  // Col X
                         visitors: Int          // Col L
                        ):
-
-  val actualPrice: Double =
-    if days == 0 || rooms == 0 then bookingPrice
-    else bookingPrice / days / rooms
+  

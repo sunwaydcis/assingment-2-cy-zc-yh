@@ -1,7 +1,8 @@
 import scala.io.Source
 import scala.util.{Try, Success, Failure}
+import function.AverageFunction
 import model.HotelBooking
-import answer.Answer
+import function.Answer
 
 @main def HotelAnalysis(): Unit =
 
@@ -31,8 +32,13 @@ import answer.Answer
   bookingsResult match
     case Success(bookings) =>
       println(s"Loaded ${bookings.size} bookings successfully.")
+
+      // Compute average results
+      val avgData = AverageFunction.computeAverages(bookings)
+
+      // Now call answers correctly
       Answer.answer1(bookings)
-      Answer.answer2(bookings)
+      Answer.answer2(avgData)
       Answer.answer3(bookings)
 
     case Failure(ex) =>
