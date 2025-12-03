@@ -1,7 +1,7 @@
 package answer
 
 import model.HotelBooking
-import model.{EconomyScore, PriceBased, DiscountBased, MarginBased}
+import model.{EconomyScore, PriceNormalized,DiscountNormalized,MarginNormalized}
 
 object Answer:
 
@@ -15,20 +15,36 @@ object Answer:
     println("-" * 60)
 
   def answer2(rawData: List[HotelBooking]): Unit =
-    println("2. Most economical value using polymorphic scoring system")
+    println("2. Hotels and their normalized economy scores:")
 
-    val scoringMethods: List[EconomyScore] =
-      List(new PriceBased, new DiscountBased, new MarginBased)
+    // find min & max to normalize correctly
+    val prices = rawData.map(_.bookingPrice)
+    val discounts = rawData.map(_.discount)
+    val margins = rawData.map(_.profitMargin)
 
-    def totalScore(hotel: HotelBooking): Double =
-      scoringMethods.map(_.score(hotel)).sum   // Works due to subtype polymorphism
+    val minPrice = prices.min
+    val maxPrice = prices.max
+    val maxDiscount = discounts.max
+    val minMargin = margins.min
+    val maxMargin = margins.max
 
-    val bestHotel = rawData.minBy(totalScore)
+    // scoring rules (polymorphic)
+    val scoringMethods: List[EconomyScore] = List(
+      new PriceNormalized(minPrice, maxPrice),
+      new DiscountNormalized(maxDiscount),
+      new MarginNormalized(minMargin, maxMargin)
+    )
 
-    println(s"Most Economical Hotel: ${bestHotel.hotel}")
-    println(s"Booking Price: ${bestHotel.bookingPrice}")
-    println(s"Discount: ${bestHotel.discount}")
-    println(s"Profit Margin: ${bestHotel.profitMargin}")
+    // calculate total score for a hotel
+    def totalScore(h: HotelBooking): Double =
+      scoringMethods.map(_.score(h)).sum
+
+    // print score for all hotels
+    rawData.foreach { hotel =>
+      val score = totalScore(hotel)
+      println(f"Hotel: ${hotel.hotel}, Score: $score%.2f, Price: ${hotel.bookingPrice}, Discount: ${hotel.discount}, Margin: ${hotel.profitMargin}")
+    }
+
     println("-" * 60)
 
 

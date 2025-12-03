@@ -1,16 +1,21 @@
 package model
 
+
 trait EconomyScore:
   def score(h: HotelBooking): Double
 
-class PriceBased extends EconomyScore:
-  override def score(h: HotelBooking): Double =
-    h.bookingPrice // lower better
+  def normalize(value: Double, min: Double, max: Double): Double =
+    if max - min == 0 then 0.0
+    else (value - min) / (max - min)
 
-class DiscountBased extends EconomyScore:
+class PriceNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: HotelBooking): Double =
-    -h.discount // higher discount better
+    normalize(h.bookingPrice, min, max)
 
-class MarginBased extends EconomyScore:
+class DiscountNormalized(max: Double) extends EconomyScore:
   override def score(h: HotelBooking): Double =
-    h.profitMargin // lower better
+    1.0 - normalize(h.discount, 0, max)  // reverse
+
+class MarginNormalized(min: Double, max: Double) extends EconomyScore:
+  override def score(h: HotelBooking): Double =
+    normalize(h.profitMargin, min, max)
