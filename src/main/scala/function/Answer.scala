@@ -1,6 +1,6 @@
 package function
 
-import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized}
+import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized, VisitorNormalized}
 
 object Answer:
 
@@ -52,13 +52,35 @@ object Answer:
     )
 
     println("-" * 60)
-  // Question 3:
-  def answer3(rawData: List[HotelBooking]): Unit =
-    val mostProfitable = rawData
-      .groupBy(_.hotel)
-      .map((HotelName, Info) => (HotelName, Info.map(b => b.bookingPrice * b.visitors * b.profitMargin).sum))
-      .maxBy( _._2 )
 
-    println(s"3. Most Profitable Hotel: ${mostProfitable._1}")
-    println(f"   Total Profit: ${mostProfitable._2}%.2f")
-    println("-" * 60)
+  // Question 3:
+  def answer3(rawData: List[AverageData]): Unit =
+    val visitors = rawData.map(_.averageVisitor)
+    val margins = rawData.map(_.averageProfitMargin)
+
+    val minMargin = margins.min
+    val maxMargin = margins.max
+    val minVisitors = visitors.min
+    val maxVisitors = visitors.max
+
+    // Normalized scorers for AverageData
+    val scoringMethods: List[AverageData => Double] = List(
+      h => if maxMargin - minMargin == 0 then 0.0 else (h.averageProfitMargin - minMargin) / (maxMargin - minMargin),
+      h => if maxVisitors - minVisitors == 0 then 0.0 else (h.averageVisitor - minVisitors) / (maxVisitors - minVisitors)
+    )
+
+    // Total score for a hotel
+    def totalScore(h: AverageData): Double =
+      scoringMethods.map(f => f(h)).sum / scoringMethods.size
+
+    // Since each hotel is already one row, just map directly
+    val hotelScores = rawData.map(h => h.hotelName -> totalScore(h))
+
+    val mostProfitableHotel = hotelScores.maxBy(_._2)
+
+    println(
+      f"Most Profitable Hotel: ${mostProfitableHotel._1}\n" +
+        f"Average Score: ${mostProfitableHotel._2}%.2f"
+    )
+
+

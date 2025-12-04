@@ -39,7 +39,7 @@ import function.Answer
       // Now call answers correctly
       Answer.answer1(bookings)
       Answer.answer2(avgData)
-      Answer.answer3(bookings)
+      Answer.answer3(avgData)
 
     case Failure(ex) =>
       println("ERROR: Unable to load Hotel_Dataset.csv file.")
