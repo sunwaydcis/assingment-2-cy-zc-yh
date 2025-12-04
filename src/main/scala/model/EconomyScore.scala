@@ -22,4 +22,4 @@ class MarginNormalized(min: Double, max: Double) extends EconomyScore:
 
 class VisitorNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =
-    normalize(h.averageVisitor, min, max)
+    normalize(h.sumOfVisitor, min, max)

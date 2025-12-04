@@ -44,7 +44,7 @@ object Answer:
     val score = totalScore(best)
 
     println(
-      f"Best Hotel: ${best.hotelName}\n" +
+      f"Best Hotel: ${best.hotelName} (${best.hotelCity})\n" +
         f"Score: $score%.2f\n" +
         f"Average Price: ${best.averagePrice}%.2f\n" +
         f"Average Discount: ${best.averageDiscount}%.2f\n" +
@@ -55,7 +55,7 @@ object Answer:
 
   // Question 3:
   def answer3(rawData: List[AverageData]): Unit =
-    val visitors = rawData.map(_.averageVisitor)
+    val visitors = rawData.map(_.sumOfVisitor)
     val margins = rawData.map(_.averageProfitMargin)
 
     val minMargin = margins.min
@@ -66,21 +66,24 @@ object Answer:
     // Normalized scorers for AverageData
     val scoringMethods: List[AverageData => Double] = List(
       h => if maxMargin - minMargin == 0 then 0.0 else (h.averageProfitMargin - minMargin) / (maxMargin - minMargin),
-      h => if maxVisitors - minVisitors == 0 then 0.0 else (h.averageVisitor - minVisitors) / (maxVisitors - minVisitors)
+      h => if maxVisitors - minVisitors == 0 then 0.0 else (h.sumOfVisitor - minVisitors) / (maxVisitors - minVisitors)
     )
 
     // Total score for a hotel
     def totalScore(h: AverageData): Double =
       scoringMethods.map(f => f(h)).sum / scoringMethods.size
 
-    // Since each hotel is already one row, just map directly
-    val hotelScores = rawData.map(h => h.hotelName -> totalScore(h))
+    // Keep the whole object instead of flattening to a tuple
+    val hotelScores: List[(AverageData, Double)] =
+      rawData.map(h => (h, totalScore(h)))
 
-    val mostProfitableHotel = hotelScores.maxBy(_._2)
+    // Find best
+    val (bestHotel, bestScore) = hotelScores.maxBy(_._2)
 
     println(
-      f"Most Profitable Hotel: ${mostProfitableHotel._1}\n" +
-        f"Average Score: ${mostProfitableHotel._2}%.2f"
+      f"Most Profitable Hotel: ${bestHotel.hotelName} (${bestHotel.hotelCity})\n" +
+        f"Average Score: $bestScore%.2f"
     )
+
 
 

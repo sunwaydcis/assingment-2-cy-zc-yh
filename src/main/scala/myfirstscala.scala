@@ -20,6 +20,7 @@ import function.Answer
           rooms = parseInt(cols(15)),
           hotel = cols(16),
           country = cols(9),
+          hotelCity = cols(10),
           bookingPrice = parseDouble(cols(20)),
           discount = parseDouble(cols(21)),
           profitMargin = parseDouble(cols(23)),
