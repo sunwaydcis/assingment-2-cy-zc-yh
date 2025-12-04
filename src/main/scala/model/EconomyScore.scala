@@ -16,13 +16,9 @@ class DiscountNormalized(max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =
     normalize(h.averageDiscount, 0, max)
 
-class CustomerMarginNormalized(min: Double, max: Double) extends EconomyScore:
+class MarginNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =
     1.0 - normalize(h.averageProfitMargin, min, max)
-
-class BusinessMarginNormalized(min: Double, max: Double) extends EconomyScore:
-  override def score(h: AverageData): Double =
-    normalize(h.averageProfitMargin, min, max)
 
 class VisitorNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =

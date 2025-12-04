@@ -1,6 +1,6 @@
 package function
 
-import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, CustomerMarginNormalized,BusinessMarginNormalized, PriceNormalized, VisitorNormalized}
+import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized, VisitorNormalized}
 
 object Answer:
 
@@ -31,7 +31,7 @@ object Answer:
     val scoringMethods: List[EconomyScore] = List(
       new PriceNormalized(minPrice, maxPrice),
       new DiscountNormalized(maxDiscount),
-      new CustomerMarginNormalized(minMargin, maxMargin)
+      new MarginNormalized(minMargin, maxMargin)
     )
 
     // total score for each hotel (NOW uses AverageData)
@@ -65,7 +65,7 @@ object Answer:
 
     // Normalized scorers for AverageData
     val scoringMethods: List[EconomyScore] = List(
-      new BusinessMarginNormalized(minMargin, maxMargin),
+      new MarginNormalized(minMargin, maxMargin),
       new VisitorNormalized(minVisitors, maxVisitors)
     )
 
