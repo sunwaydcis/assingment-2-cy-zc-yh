@@ -20,6 +20,10 @@ class MarginNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =
     1.0 - normalize(h.averageProfitMargin, min, max)
 
+class MarginNormalized_HotelSide(min: Double, max: Double) extends EconomyScore:
+  override def score(h: AverageData): Double = 
+    normalize(h.averageProfitMargin, min, max)
+
 class VisitorNormalized(min: Double, max: Double) extends EconomyScore:
   override def score(h: AverageData): Double =
     normalize(h.sumOfVisitor, min, max)

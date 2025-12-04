@@ -1,6 +1,6 @@
 package function
 
-import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized, VisitorNormalized}
+import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, MarginNormalized_HotelSide, PriceNormalized, VisitorNormalized}
 
 object Answer:
 
@@ -55,7 +55,8 @@ object Answer:
 
   // Question 3:
   def answer3(rawData: List[AverageData]): Unit =
-    val visitors = rawData.map(_.sumOfVisitor)
+    // 1. Extract data
+    val visitors = rawData.map(_.sumOfVisitor.toDouble)
     val margins = rawData.map(_.averageProfitMargin)
 
     val minMargin = margins.min
@@ -63,28 +64,27 @@ object Answer:
     val minVisitors = visitors.min
     val maxVisitors = visitors.max
 
-    // Normalized scorers for AverageData
     val scoringMethods: List[EconomyScore] = List(
-      new MarginNormalized(minMargin, maxMargin),
+      new MarginNormalized_HotelSide(minMargin, maxMargin),
       new VisitorNormalized(minVisitors, maxVisitors)
     )
 
-    // Total score for a hotel
+    // 3. Calculate Total Score for a hotel
     def totalScore(h: AverageData): Double =
       scoringMethods.map(_.score(h)).sum / scoringMethods.size
 
-    // Keep the whole object instead of flattening to a tuple
-    val hotelScores = rawData.map(h =>
-      (h.hotelName, h.hotelCity, totalScore(h))
-    )
+    // 4. Map rawData to scores
+    val hotelScores = rawData.map(h => (h, totalScore(h)))
 
-    // Find best
-    val mostProfitableHotel = hotelScores.maxBy(_._3)
+    // 5. Find best
+    val (bestHotel, bestScore) = hotelScores.maxBy(_._2)
 
     println(
-      f"Most Profitable Hotel: ${mostProfitableHotel._1} (${mostProfitableHotel._2})\n" +
-        f"Average Score: ${mostProfitableHotel._3}%.2f"
+      f"3. Most Profitable Hotel: ${bestHotel.hotelName} (${bestHotel.hotelCity})\n" +
+        f"Average Score: $bestScore%.2f\n" +
+        f"Average Profit Margin: ${bestHotel.averageProfitMargin}%.3f\n" +
+        f"Total Visitors: ${bestHotel.sumOfVisitor}"
     )
-
+    println("-" * 60)
 
 
