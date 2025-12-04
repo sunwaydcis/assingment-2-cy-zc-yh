@@ -1,6 +1,6 @@
 package function
 
-import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, MarginNormalized, PriceNormalized, VisitorNormalized}
+import model.{AverageData, DiscountNormalized, EconomyScore, HotelBooking, CustomerMarginNormalized,BusinessMarginNormalized, PriceNormalized, VisitorNormalized}
 
 object Answer:
 
@@ -31,7 +31,7 @@ object Answer:
     val scoringMethods: List[EconomyScore] = List(
       new PriceNormalized(minPrice, maxPrice),
       new DiscountNormalized(maxDiscount),
-      new MarginNormalized(minMargin, maxMargin)
+      new CustomerMarginNormalized(minMargin, maxMargin)
     )
 
     // total score for each hotel (NOW uses AverageData)
@@ -64,25 +64,26 @@ object Answer:
     val maxVisitors = visitors.max
 
     // Normalized scorers for AverageData
-    val scoringMethods: List[AverageData => Double] = List(
-      h => if maxMargin - minMargin == 0 then 0.0 else (h.averageProfitMargin - minMargin) / (maxMargin - minMargin),
-      h => if maxVisitors - minVisitors == 0 then 0.0 else (h.sumOfVisitor - minVisitors) / (maxVisitors - minVisitors)
+    val scoringMethods: List[EconomyScore] = List(
+      new BusinessMarginNormalized(minMargin, maxMargin),
+      new VisitorNormalized(minVisitors, maxVisitors)
     )
 
     // Total score for a hotel
     def totalScore(h: AverageData): Double =
-      scoringMethods.map(f => f(h)).sum / scoringMethods.size
+      scoringMethods.map(_.score(h)).sum / scoringMethods.size
 
     // Keep the whole object instead of flattening to a tuple
-    val hotelScores: List[(AverageData, Double)] =
-      rawData.map(h => (h, totalScore(h)))
+    val hotelScores = rawData.map(h =>
+      (h.hotelName, h.hotelCity, totalScore(h))
+    )
 
     // Find best
-    val (bestHotel, bestScore) = hotelScores.maxBy(_._2)
+    val mostProfitableHotel = hotelScores.maxBy(_._3)
 
     println(
-      f"Most Profitable Hotel: ${bestHotel.hotelName} (${bestHotel.hotelCity})\n" +
-        f"Average Score: $bestScore%.2f"
+      f"Most Profitable Hotel: ${mostProfitableHotel._1} (${mostProfitableHotel._2})\n" +
+        f"Average Score: ${mostProfitableHotel._3}%.2f"
     )
 
 
